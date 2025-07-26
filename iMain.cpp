@@ -1,107 +1,122 @@
 #include "iGraphics.h"
-#include<unistd.h>
-#include<math.h>
+#include <unistd.h>
+#include <math.h>
 #define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 1000
-double ball_x1=10,ball_y1=10,radius=15,dx=5,head_x=450,head_y=120,head_radius=25;
-int ball_x =500,ball_y=0,timer_start=0,ball_touched_ceil=0,ball_shoot=0,kick_off=0;
-double leg_top=30 , leg_bottom=0;
+double ball_x1 = 10, ball_y1 = 10, radius = 15, dx = 5, head_x = 450, head_y = 120, head_radius = 25;
+int ball_x = 500, ball_y = 0, timer_start = 0, ball_touched_ceil = 0, ball_shoot = 0, kick_off = 0;
+double leg_top = 30, leg_bottom = 0;
 /*
 function iDraw() is called again and again by the system.
 */
 void ball_move()
 {
-    if(kick_off == 1) ball_x+=dx;
-   // This is the parabolic eq of the ball when headed.
-   if(ball_touched_ceil == 0 && ball_shoot == 0 && kick_off ==1) ball_y= (ball_x-ball_x1-400)*(ball_x-ball_x1-400)/(-800) + ball_y1 + 200;
-   else if(ball_touched_ceil ==1) ball_y-=10;
-   if(ball_x + radius>SCREEN_WIDTH ){
-     ball_x = SCREEN_WIDTH - radius;
-     ball_x1=ball_x-800;
-     ball_y1 = ball_y;
-     dx=-dx;
-     ball_touched_ceil=0;
-     ball_shoot=0;
-   }
-   if(ball_x > 950 && ball_y + radius > 150 && ball_y - radius < 150){
-     ball_x1=ball_x-800;
-     ball_y1 = ball_y;
-     dx=-dx;
-     ball_touched_ceil=0;
-     ball_shoot=0; 
-   }
-   else if(ball_x < radius ){
-     ball_x = radius;
-     ball_x1 = ball_x;
-     ball_y1 = ball_y;
-     dx=-dx;
-     ball_touched_ceil=0;
-     ball_shoot=0;
-   }
-   if(ball_x < 50 && ball_y + radius > 150 && ball_y - radius < 150){
-     ball_x1 = ball_x;
-     ball_y1 = ball_y;
-     dx=-dx;
-     ball_touched_ceil=0;
-     ball_shoot=0;
-   }
-   if(ball_y + radius > SCREEN_HEIGHT){
-     ball_y = SCREEN_HEIGHT - radius;
-     if(dx<0) ball_x1 = ball_x-800;
-     else ball_x1 = ball_x;
-     ball_y1 = ball_y;
-     ball_touched_ceil=1;
-     ball_shoot = 0;
-   }
-   if(ball_y < radius){
-       if(dx>0){
-        ball_y = radius;
+    if (kick_off == 1)
+        ball_x += dx;
+    // This is the parabolic eq of the ball when headed.
+    if (ball_touched_ceil == 0 && ball_shoot == 0 && kick_off == 1)
+        ball_y = (ball_x - ball_x1 - 400) * (ball_x - ball_x1 - 400) / (-800) + ball_y1 + 200;
+    else if (ball_touched_ceil == 1)
+        ball_y -= 10;
+    if (ball_x + radius > SCREEN_WIDTH)
+    {
+        ball_x = SCREEN_WIDTH - radius;
+        ball_x1 = ball_x - 800;
+        ball_y1 = ball_y;
+        dx = -dx;
+        ball_touched_ceil = 0;
+        ball_shoot = 0;
+    }
+    if (ball_x > 950 && ball_y + radius > 150 && ball_y - radius < 150)
+    {
+        ball_x1 = ball_x - 800;
+        ball_y1 = ball_y;
+        dx = -dx;
+        ball_touched_ceil = 0;
+        ball_shoot = 0;
+    }
+    else if (ball_x < radius)
+    {
+        ball_x = radius;
         ball_x1 = ball_x;
-        ball_y1 = ball_y;}
-        else{
+        ball_y1 = ball_y;
+        dx = -dx;
+        ball_touched_ceil = 0;
+        ball_shoot = 0;
+    }
+    if (ball_x < 50 && ball_y + radius > 150 && ball_y - radius < 150)
+    {
+        ball_x1 = ball_x;
+        ball_y1 = ball_y;
+        dx = -dx;
+        ball_touched_ceil = 0;
+        ball_shoot = 0;
+    }
+    if (ball_y + radius > SCREEN_HEIGHT)
+    {
+        ball_y = SCREEN_HEIGHT - radius;
+        if (dx < 0)
+            ball_x1 = ball_x - 800;
+        else
+            ball_x1 = ball_x;
+        ball_y1 = ball_y;
+        ball_touched_ceil = 1;
+        ball_shoot = 0;
+    }
+    if (ball_y < radius)
+    {
+        if (dx > 0)
+        {
             ball_y = radius;
-            ball_x1 = ball_x -800;
+            ball_x1 = ball_x;
             ball_y1 = ball_y;
         }
-    ball_touched_ceil=0;
-    ball_shoot =0;
-   }
-    if((ball_x < 40 && ball_y + radius < 150) || (ball_x > 960 && ball_y + radius < 150))
-    { 
-     sleep(1);
-     ball_touched_ceil =0;
-     ball_shoot =0;
-     ball_x = 500, ball_y =0;
-    kick_off =0;}
-   
+        else
+        {
+            ball_y = radius;
+            ball_x1 = ball_x - 800;
+            ball_y1 = ball_y;
+        }
+        ball_touched_ceil = 0;
+        ball_shoot = 0;
+    }
+    if ((ball_x < 40 && ball_y + radius < 150) || (ball_x > 960 && ball_y + radius < 150))
+    {
+        sleep(1);
+        ball_touched_ceil = 0;
+        ball_shoot = 0;
+        ball_x = 500, ball_y = 0;
+        kick_off = 0;
+    }
 }
 void iDraw()
-{   iClear();
-    iSetColor(135,206,235);
-    iFilledRectangle(0,150,1000,450);
-    iSetColor(154,236,153);
-     iFilledRectangle(50,0,900,150);
-    iSetTransparentColor(255,255,255,0.5);
-    iFilledRectangle(0,0,45,140);
-    iFilledRectangle(955,0,45,140);
-    iSetColor(0,0,0);
-    iFilledRectangle(0,140,50,10);
-    iFilledRectangle(45,0,5,40);
-    iFilledRectangle(950,140,50,10);
-    iFilledRectangle(950,0,5,40);
-    iSetColor(255,0,0);
-    iFilledCircle(ball_x,ball_y,radius);
+{
+    iClear();
+    iSetColor(135, 206, 235);
+    iFilledRectangle(0, 150, 1000, 450);
+    iSetColor(154, 236, 153);
+    iFilledRectangle(50, 0, 900, 150);
+    iSetTransparentColor(255, 255, 255, 0.5);
+    iFilledRectangle(0, 0, 45, 140);
+    iFilledRectangle(955, 0, 45, 140);
+    iSetColor(0, 0, 0);
+    iFilledRectangle(0, 140, 50, 10);
+    iFilledRectangle(45, 0, 5, 40);
+    iFilledRectangle(950, 140, 50, 10);
+    iFilledRectangle(950, 0, 5, 40);
+    iSetColor(255, 0, 0);
+    iFilledCircle(ball_x, ball_y, radius);
     // place your drawing codes here
-    iSetColor(0,0,0);
-// This is the head of player1//
-    iFilledCircle(head_x,head_y,head_radius);
-// This is the body
-    iFilledRectangle(head_x - head_radius,leg_top,2*head_radius,head_y - leg_top - head_radius);
-// Leg
-    iLine(head_x,leg_top,head_x - 20 ,leg_bottom);
-    iLine(head_x,leg_top,head_x + 20 ,leg_bottom);
-    iSetColor(255,0,0);
-    iFilledCircle(ball_x,ball_y,radius);
+    iSetColor(0, 0, 0);
+    // This is the head of player1//
+    iFilledCircle(head_x, head_y, head_radius);
+    // This is the body
+    iFilledRectangle(head_x - head_radius, leg_top, 2 * head_radius, head_y - leg_top - head_radius);
+    // Leg
+    iLine(head_x, leg_top, head_x - 20, leg_bottom);
+    iLine(head_x, leg_top, head_x + 20, leg_bottom);
+    iSetColor(255, 0, 0);
+    iFilledCircle(ball_x, ball_y, radius);
 }
 
 /*
@@ -155,71 +170,103 @@ void iKeyboard(unsigned char key)
 {
     switch (key)
     {
-    case 'q':{
+    case 'q':
+    {
         // do something with 'q'
         iPauseTimer(0);
-        break;}
-    case 'r':{
+        break;
+    }
+    case 'r':
+    {
         iResumeTimer(0);
         break;
     }
-    case 'h':{
-        if(((ball_x > head_x)? (ball_x - head_x) : (head_x - ball_x) )<=40)
-        {if(kick_off == 10) kick_off =1;
-        if(timer_start==0 ){
-          iSetTimer(10,ball_move);
-          timer_start =1;}
-        if(dx<0) dx =-dx;
-         ball_x1 = ball_x;
-         ball_y1 = ball_y;
-     ball_touched_ceil=0;
-     ball_shoot =0;
-        break;
+    case 'h':
+    {
+        if (((ball_x > head_x) ? (ball_x - head_x) : (head_x - ball_x)) <= 40)
+        {
+            if (kick_off == 10)
+                kick_off = 1;
+            if (timer_start == 0)
+            {
+                iSetTimer(10, ball_move);
+                timer_start = 1;
+            }
+            if (dx < 0)
+                dx = -dx;
+            ball_x1 = ball_x;
+            ball_y1 = ball_y;
+            ball_touched_ceil = 0;
+            ball_shoot = 0;
+            break;
+        }
     }
-}
-    case 's':{
-        if(((ball_x > head_x)? (ball_x - head_x) : (head_x - ball_x) )<=40)
-        {if(kick_off == 10) kick_off =1;
-        ball_shoot =1;
-        dx=(dx>0)?dx:-dx;
-        break;}
+    case 's':
+    {
+        if (((ball_x > head_x) ? (ball_x - head_x) : (head_x - ball_x)) <= 40)
+        {
+            if (kick_off == 10)
+                kick_off = 1;
+            ball_shoot = 1;
+            dx = (dx > 0) ? dx : -dx;
+            break;
+        }
     }
-    case '\r':{
-        if(kick_off ==0) {ball_x =500,ball_y =0;
-                         kick_off =10;}
-        break;
-    }
-    case 'w':{
-        if(head_y <= SCREEN_HEIGHT - 30)
-       { head_y+=30;
-        leg_top+=30;
-        leg_bottom+=30;}
-        else{ head_y = SCREEN_HEIGHT - head_radius;
-        leg_top = head_y - 90;
-        leg_bottom = leg_top - 30; }
-        break;
-    }
-    case 'z':{
-        if(head_y >=150) {head_y-=30;
-        leg_top-=30;
-        leg_bottom-=30;}
-        else {
-            head_y = 120;
-            leg_top = 30;
-            leg_bottom =0;
+    case '\r':
+    {
+        if (kick_off == 0)
+        {
+            ball_x = 500, ball_y = 0;
+            kick_off = 10;
         }
         break;
     }
-    case 'a' :{
-        if(head_x>=30)
-        head_x-=30;
-        else head_x = 25;
+    case 'w':
+    {
+        if (head_y <= SCREEN_HEIGHT - 30)
+        {
+            head_y += 30;
+            leg_top += 30;
+            leg_bottom += 30;
+        }
+        else
+        {
+            head_y = SCREEN_HEIGHT - head_radius;
+            leg_top = head_y - 90;
+            leg_bottom = leg_top - 30;
+        }
         break;
     }
-    case 'd':{
-        if(head_x <= SCREEN_WIDTH - 30)
-        head_x+=30;
-        else head_x = SCREEN_WIDTH - head_radius;
+    case 'z':
+    {
+        if (head_y >= 150)
+        {
+            head_y -= 30;
+            leg_top -= 30;
+            leg_bottom -= 30;
+        }
+        else
+        {
+            head_y = 120;
+            leg_top = 30;
+            leg_bottom = 0;
+        }
+        break;
+    }
+    case 'a':
+    {
+        if (head_x >= 30)
+            head_x -= 30;
+        else
+            head_x = 25;
+        break;
+    }
+    case 'd':
+    {
+        if (head_x <= SCREEN_WIDTH - 30)
+            head_x += 30;
+        else
+            head_x = SCREEN_WIDTH - head_radius;
         break;
     }
     // place your codes for other keys here
@@ -254,6 +301,6 @@ int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
     // place your own initialization codes here.
-    iInitialize(SCREEN_WIDTH,SCREEN_HEIGHT, "Simple Soccer");
+    iInitialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Soccer");
     return 0;
 }
